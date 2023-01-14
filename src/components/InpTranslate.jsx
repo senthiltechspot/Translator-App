@@ -9,6 +9,7 @@ import {
   Text,
 } from "@chakra-ui/react";
 import DisplayTranslate from "./DisplayTranslate";
+import { useCallback } from "react";
 
 const InpTranslate = () => {
   let [value, setValue] = useState({
@@ -16,6 +17,7 @@ const InpTranslate = () => {
     target: "",
     source: "",
     translated: "",
+    from: "",
   });
 
   const [languages, setLanguages] = useState(null);
@@ -29,11 +31,11 @@ const InpTranslate = () => {
 
   const onSubmitHandler = (event) => {
     event.preventDefault();
-    detectAndTranslate(value.q, value.target);
+    detectAndTranslate(value.q, value.target, value.from);
     // console.log("After stored", value);
   };
 
-  useEffect(() => {
+  const getLanguages = useCallback(() => {
     const options = {
       method: "GET",
       url: "https://long-translator.p.rapidapi.com/languages",
@@ -52,15 +54,22 @@ const InpTranslate = () => {
       .catch(function (error) {
         console.error(error);
       });
-  }, []);
+  }, [setLanguages]);
+
+  useEffect(() => {
+    getLanguages();
+  }, [getLanguages]);
+
   // console.log("Received ", languages && languages.data);
 
-  const detectAndTranslate = (query, target) => {
+  const detectAndTranslate = (query, target, from) => {
     const encodedParams = new URLSearchParams();
-    encodedParams.append("source_language", "auto");
+    encodedParams.append("source_language", `${from}`);
     encodedParams.append("target_language", `${target}`);
     encodedParams.append("text", `${query}`);
-    // console.log(target);
+
+    // console.log("on translatate", from);
+
     const options = {
       method: "POST",
       url: "https://long-translator.p.rapidapi.com/translate",
@@ -71,19 +80,35 @@ const InpTranslate = () => {
       },
       data: encodedParams,
     };
-    let src = 'source'
-    let trans = 'translated'
-
-
+    let src = "source";
+    let trans = "translated";
     axios
       .request(options)
       .then(function (response) {
         // console.log("Deteceted and Translated", response.data);
-        setValue({
-          ...value,
-          [src]: response.data.data.detectedSourceLanguage.name,
-          [trans]: response.data.data.translatedText,
-        });
+
+        if (from === "auto") {
+          // console.log("Language auto");
+          setValue({
+            ...value,
+            [trans]: response.data.data.translatedText,
+            [src]: response.data.data.detectedSourceLanguage.name,
+          });
+        } else if (from !== "auto") {
+          // console.log("Language from", from);
+          let result = languages.data.languages.filter((obj) => {
+            if (obj.code === from) {
+              return obj.name
+            }
+            return false
+          });
+          // console.log(result);
+          setValue({
+            ...value,
+            [trans]: response.data.data.translatedText,
+            [src]: result[0].name,
+          });
+        }
       })
       .catch(function (error) {
         console.error(error);
@@ -95,15 +120,16 @@ const InpTranslate = () => {
       <Text fontWeight="extrabold">Translator</Text>
       <form onSubmit={onSubmitHandler}>
         <div w="80%">
-          <FormLabel>Select Languages to Translate</FormLabel>
+          <FormLabel>Select From Languages</FormLabel>
           <Select
-            placeholder="Select Language"
-            name="target"
-            value={value.target}
+            placeholder="From"
+            name="from"
+            value={value.from}
             onChange={handleChange}
             required
           >
-            <option value="en">English(default)</option>
+            <option value="auto">Auto</option>
+            <option value="en">English</option>
             <option value="ta">Tamil</option>
             {languages &&
               languages.data.languages.map((e, i) => (
@@ -124,6 +150,23 @@ const InpTranslate = () => {
           required
         />
         <br />
+        <FormLabel>Select Languages to Translate</FormLabel>
+        <Select
+          placeholder="To"
+          name="target"
+          value={value.target}
+          onChange={handleChange}
+          required
+        >
+          <option value="en">English(default)</option>
+          <option value="ta">Tamil</option>
+          {languages &&
+            languages.data.languages.map((e, i) => (
+              <option value={e.code} key={i}>
+                {e.name}
+              </option>
+            ))}
+        </Select>
         <br />
 
         <Button type="submit" colorScheme="telegram" variant="solid">

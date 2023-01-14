@@ -7,6 +7,12 @@ function App() {
     <div className="App">
       <NavBar />
       <Translate />
+      <br />
+      <footer>
+        <h3>
+          © Designed and Developed by <a href="https://github.com/Senthilspot/Translator-App"> Senthilspot</a>
+        </h3>
+      </footer>
     </div>
   );
 }
