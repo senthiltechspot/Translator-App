@@ -98,9 +98,9 @@ const InpTranslate = () => {
           // console.log("Language from", from);
           let result = languages.data.languages.filter((obj) => {
             if (obj.code === from) {
-              return obj.name
+              return obj.name;
             }
-            return false
+            return false;
           });
           // console.log(result);
           setValue({
@@ -119,27 +119,26 @@ const InpTranslate = () => {
     <div>
       <Text fontWeight="extrabold">Translator</Text>
       <form onSubmit={onSubmitHandler}>
-        <div w="80%">
-          <FormLabel>Select From Languages</FormLabel>
-          <Select
-            placeholder="From"
-            name="from"
-            value={value.from}
-            onChange={handleChange}
-            required
-          >
-            <option value="auto">Auto</option>
-            <option value="en">English</option>
-            <option value="ta">Tamil</option>
-            {languages &&
-              languages.data.languages.map((e, i) => (
-                <option value={e.code} key={i}>
-                  {e.name}
-                </option>
-              ))}
-          </Select>
-        </div>
+        <FormLabel>Select From Languages</FormLabel>
+        <Select
+          placeholder="From"
+          name="from"
+          value={value.from}
+          onChange={handleChange}
+          required
+        >
+          <option value="auto">Auto</option>
+          <option value="en">English</option>
+          <option value="ta">Tamil</option>
+          {languages &&
+            languages.data.languages.map((e, i) => (
+              <option value={e.code} key={i}>
+                {e.name}
+              </option>
+            ))}
+        </Select>
         <br />
+        <FormLabel>Enter Text to Translate</FormLabel>
         <Textarea
           w="100%"
           placeholder="Enter the details to Translate"
@@ -149,6 +148,7 @@ const InpTranslate = () => {
           onChange={handleChange}
           required
         />
+        <br />
         <br />
         <FormLabel>Select Languages to Translate</FormLabel>
         <Select
@@ -168,9 +168,8 @@ const InpTranslate = () => {
             ))}
         </Select>
         <br />
-
         <Button type="submit" colorScheme="telegram" variant="solid">
-          Transulate
+          Translate
         </Button>
       </form>
       <br />
