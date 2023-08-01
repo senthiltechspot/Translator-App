@@ -10,7 +10,7 @@ function App() {
       <br />
       <footer>
         <h3>
-          © Designed and Developed by <a href="https://github.com/Senthilspot/Translator-App"> Senthilspot</a>
+          © Designed and Developed by <a href="https://github.com/SenthilTechSpot/Translator-App"> SenthilTechSpot</a>
         </h3>
       </footer>
     </div>
