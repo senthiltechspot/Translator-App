@@ -1,4 +1,10 @@
-# Google Translator 
+# Google Translator
+
+[Live Link](https://senthilstranslator.netlify.app) 
+
+`https://senthilstranslator.netlify.app`
+
+
 <h6>
             © Designed and Developed by
             <a href="https://github.com/SenthilTechSpot"> SenthilTechSpot</a>
